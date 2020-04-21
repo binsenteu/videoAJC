@@ -63,6 +63,13 @@ public class Adherent {
 		this.adresse = null;
 	}
 	
+	public Adherent(String prenom, String nom, Civilite civilite) {
+		this.prenom = prenom;
+		this.nom = nom;
+		this.civilite = civilite;
+		this.adresse = null;
+	}
+	
 	//getters setters
 	public Integer getId() {
 		return id;
@@ -97,13 +104,10 @@ public class Adherent {
 	}
 
 	public Adresse getAdresse() {
-		DaoAdherent daoAdherent = DaoAdherentFactory.getInstance();
-		return daoAdherent.findAdresse(this);
+		return this.adresse;
 	}
 
 	public void setAdresse(Adresse adresse) {
-		DaoAdherent daoAdherent = DaoAdherentFactory.getInstance();
-		daoAdherent.updateAdresse(this, adresse);
 		this.adresse = adresse;
 	}
 	

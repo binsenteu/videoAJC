@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,15 +22,26 @@ public class DaoAdherentJdbcImpl implements DaoAdherent {
 	@Override
 	public void insert(Adherent obj) {
 		try (PreparedStatement ps = Context.getInstance().getConnection().prepareStatement(
-				"insert into adherents (id, prenom, nom, civilite, numero_rue, adresse_rue, code_postal, ville) values (nextval('seq_adherent'),?,?,?,?,?,?,?)",
+				"insert into adherents (id_adherents, prenom, nom, civilite, numero_rue, adresse_rue, code_postal, ville) values (nextval('seq_adherent'),?,?,?,?,?,?,?)",
 				PreparedStatement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, obj.getPrenom());
 			ps.setString(2, obj.getNom());
-			ps.setString(3, obj.getCivilite().toString());
-			ps.setInt(4, obj.getAdresse().getNumero());
-			ps.setString(5, obj.getAdresse().getRue());
-			ps.setString(6, obj.getAdresse().getCodePostal());
-			ps.setString(7, obj.getAdresse().getVille());
+			if (obj.getCivilite() != null) {
+				ps.setString(3, obj.getCivilite().toString());
+			} else {
+				ps.setNull(3, Types.VARCHAR);
+			}
+			if (obj.getAdresse() != null) {
+				ps.setInt(4, obj.getAdresse().getNumero());
+				ps.setString(5, obj.getAdresse().getRue());
+				ps.setString(6, obj.getAdresse().getCodePostal());
+				ps.setString(7, obj.getAdresse().getVille());
+			} else {
+				ps.setNull(4, Types.INTEGER);
+				ps.setNull(5, Types.VARCHAR);
+				ps.setNull(6, Types.VARCHAR);
+				ps.setNull(7, Types.VARCHAR);
+			}
 
 			ps.executeUpdate();
 
@@ -52,14 +64,27 @@ public class DaoAdherentJdbcImpl implements DaoAdherent {
 	@Override
 	public Adherent update(Adherent obj) {
 		try (PreparedStatement ps = Context.getInstance().getConnection().prepareStatement(
-				"update adherents set prenom = ?, nom = ?, civilite = ?, numero_rue = ?, adresse_rue = ?, code_postal = ?, ville = ? where id = ?")) {
+				"update adherents set prenom = ?, nom = ?, civilite = ?, numero_rue = ?, adresse_rue = ?, code_postal = ?, ville = ? where id_adherents = ?")) {
 			ps.setString(1, obj.getPrenom());
 			ps.setString(2, obj.getNom());
-			ps.setString(3, obj.getCivilite().toString());
-			ps.setInt(4, obj.getAdresse().getNumero());
-			ps.setString(5, obj.getAdresse().getRue());
-			ps.setString(6, obj.getAdresse().getCodePostal());
-			ps.setString(7, obj.getAdresse().getVille());
+			
+			if (obj.getCivilite() != null) {
+				ps.setString(3, obj.getCivilite().toString());
+			} else {
+				ps.setNull(3, Types.VARCHAR);
+			}
+			if (obj.getAdresse() != null) {
+				ps.setInt(4, obj.getAdresse().getNumero());
+				ps.setString(5, obj.getAdresse().getRue());
+				ps.setString(6, obj.getAdresse().getCodePostal());
+				ps.setString(7, obj.getAdresse().getVille());
+			} else {
+				ps.setNull(4, Types.INTEGER);
+				ps.setNull(5, Types.VARCHAR);
+				ps.setNull(6, Types.VARCHAR);
+				ps.setNull(7, Types.VARCHAR);
+			}
+			
 			ps.setInt(8, obj.getId());
 
 			ps.executeUpdate();
@@ -85,7 +110,7 @@ public class DaoAdherentJdbcImpl implements DaoAdherent {
 	@Override
 	public void deleteById(Integer key) {
 		try (PreparedStatement ps = Context.getInstance().getConnection()
-				.prepareStatement("delete from adherents where id = ?")) {
+				.prepareStatement("delete from adherents where id_adherents = ?")) {
 			ps.setInt(1, key);
 			ps.executeUpdate();
 			Context.getInstance().getConnection().commit();
@@ -106,13 +131,16 @@ public class DaoAdherentJdbcImpl implements DaoAdherent {
 		Adresse adresse = null;
 		
 		try (PreparedStatement ps = Context.getInstance().getConnection().
-				prepareStatement("select id, prenom, nom, civilite, numero_rue, adresse_rue, code_postal, ville from adherents where id = ?")) {
+				prepareStatement("select id_adherents, prenom, nom, civilite, numero_rue, adresse_rue, code_postal, ville from adherents where id_adherents = ?")) {
 			ps.setInt(1, key);
 			ResultSet rs = ps.executeQuery();
 			
 			if (rs.next()) {
 				adresse = new Adresse(rs.getInt("numero_rue"), rs.getString("adresse_rue"), rs.getString("code_postal"), rs.getString("ville"));
-				adherent = new Adherent(rs.getInt("id"), rs.getString("prenom"), rs.getString("nom"), Civilite.valueOf(rs.getString("civilite")), adresse);
+				adherent = new Adherent(rs.getInt("id_adherents"), rs.getString("prenom"), rs.getString("nom"), adresse);
+				if (rs.getString("civilite") != null) {
+					adherent.setCivilite(Civilite.valueOf(rs.getString("civilite")));
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -133,7 +161,10 @@ public class DaoAdherentJdbcImpl implements DaoAdherent {
 			
 			while (rs.next()) {
 				adresse = new Adresse(rs.getInt("numero_rue"), rs.getString("adresse_rue"), rs.getString("code_postal"), rs.getString("ville"));
-				adherent = new Adherent(rs.getInt("id"), rs.getString("prenom"), rs.getString("nom"), Civilite.valueOf(rs.getString("civilite")), adresse);
+				adherent = new Adherent(rs.getInt("id_adherents"), rs.getString("prenom"), rs.getString("nom"), adresse);
+				if (rs.getString("civilite") != null) {
+					adherent.setCivilite(Civilite.valueOf(rs.getString("civilite")));
+				}
 				adherents.add(adherent);
 			}
 		} catch (SQLException e) {
@@ -182,41 +213,5 @@ public class DaoAdherentJdbcImpl implements DaoAdherent {
 		
 	}
 	
-	@Override
-	public Adresse findAdresse(Adherent obj) {
-		Adresse adresse = null;
-		
-		try (PreparedStatement ps = Context.getInstance().getConnection().prepareStatement("select numero_rue, adresse_rue, code_postal, ville from adherents where id = ?")) {
-			ps.setInt(1, obj.getId());
-			ResultSet rs = ps.executeQuery();
-			adresse = new Adresse(rs.getInt("numeroe_rue"), rs.getString("adresse_rue"), rs.getString("code_postal"), rs.getString("ville"));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		Context.destroy();
-		return adresse;
-	}
-	
-	@Override
-	public void updateAdresse(Adherent obj, Adresse adresse) {
-		try (PreparedStatement ps = Context.getInstance().getConnection().prepareStatement("update adherents set numero_rue = ?, adresse_rue = ?, code_postal = ?, ville = ? where id = ?")) {
-			ps.setInt(1, adresse.getNumero());
-			ps.setString(2, adresse.getRue());
-			ps.setString(3, adresse.getCodePostal());
-			ps.setString(4, adresse.getVille());
-			ps.setInt(5, obj.getId());
-			
-			ps.executeUpdate();
-			Context.getInstance().getConnection().commit();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			try {
-				Context.getInstance().getConnection().rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		}
-		Context.destroy();
-	}
 
 }
