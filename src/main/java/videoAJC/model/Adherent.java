@@ -1,5 +1,13 @@
 package videoAJC.model;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import videoAJC.context.Context;
+
 public class Adherent {
 	private Integer id;
 	private String prenom;
@@ -12,6 +20,13 @@ public class Adherent {
 		this.prenom = prenom;
 		this.nom = nom;
 		this.civilite = civilite;
+		this.adresse = adresse;
+	}
+	
+	public Adherent(Integer id, String prenom, String nom, Adresse adresse) {
+		this.id = id;
+		this.prenom = prenom;
+		this.nom = nom;
 		this.adresse = adresse;
 	}
 
@@ -54,6 +69,36 @@ public class Adherent {
 	public void setAdresse(Adresse adresse) {
 		this.adresse = adresse;
 	}
+	
+	
+	
+	public List<Article> getArticles() {
+		
+		List<Article> articles = new ArrayList<Article>();
+		Article article = null;
+		
+		try (PreparedStatement ps = Context.getInstance().getConnection().prepareStatement("select * from articles where id = ?")) {
+			ps.setInt(1, this.id);
+			ResultSet rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				article = new Article(rs.getInt("id_article"), rs.getInt("nb_disques"));
+				articles.add(article);
+				//need gestion dvd bluray
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		Context.destroy();
+		return articles;
+	}
+
+	
+	public void setArticles(List<Article> articles) {
+
+	}
+	
+	
 
 	@Override
 	public int hashCode() {
