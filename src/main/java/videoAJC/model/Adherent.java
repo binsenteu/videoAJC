@@ -4,11 +4,15 @@ public class Adherent {
 	private Integer id;
 	private String prenom;
 	private String nom;
+	private Civilite civilite;
+	private Adresse adresse;
 	
-	public Adherent(Integer id, String prenom, String nom) {
+	public Adherent(Integer id, String prenom, String nom, Civilite civilite, Adresse adresse) {
 		this.id = id;
 		this.prenom = prenom;
 		this.nom = nom;
+		this.civilite = civilite;
+		this.adresse = adresse;
 	}
 
 	public Integer getId() {
@@ -33,6 +37,22 @@ public class Adherent {
 
 	public void setNom(String nom) {
 		this.nom = nom;
+	}
+
+	public Civilite getCivilite() {
+		return civilite;
+	}
+
+	public void setCivilite(Civilite civilite) {
+		this.civilite = civilite;
+	}
+
+	public Adresse getAdresse() {
+		return adresse;
+	}
+
+	public void setAdresse(Adresse adresse) {
+		this.adresse = adresse;
 	}
 
 	@Override
