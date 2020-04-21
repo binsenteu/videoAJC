@@ -88,6 +88,11 @@ public class DaoRealisateurJdbcImpl implements DaoRealisateur {
 
     @Override
     public void deleteById(Integer key) {
+        // si on supprime un realisateur, on supprime les films associés dans la table
+        // realisations
+        DaoRealisation daoRealisation = DaoRealisationFactory.getInstance();
+        daoRealisation.deleteFromRealisateur(key);
+
         try (PreparedStatement ps = Context.getInstance().getConnection()
                 .prepareStatement("DELETE FROM realisateurs where id_realisateur=?")) {
             ps.setInt(1, key);
@@ -103,11 +108,6 @@ public class DaoRealisateurJdbcImpl implements DaoRealisateur {
                 e1.printStackTrace();
             }
         }
-
-        // si on supprime un realisateur, on supprime les films associés dans la table
-        // realisations
-        DaoRealisation daoRealisation = DaoRealisationFactory.getInstance();
-        daoRealisation.deleteFromRealisateur(key);
 
         Context.destroy();
 

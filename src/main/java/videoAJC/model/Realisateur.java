@@ -62,6 +62,10 @@ public class Realisateur {
 
     public void setRealisation(List<Realisation> realisation) {
         this.realisation = realisation;
+        DaoRealisation daoRealisation = DaoRealisationFactory.getInstance();
+        for (Realisation real : realisation) {
+            daoRealisation.insert(real.getId());
+        }
     }
 
     @Override

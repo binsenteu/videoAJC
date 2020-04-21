@@ -81,7 +81,7 @@ public class DaoRealisationJdbcImpl implements DaoRealisation {
         List<Realisation> listeRealisation = new ArrayList();
         try (PreparedStatement ps = Context.getInstance().getConnection()
                 .prepareStatement(
-                        "SELECT * FROM films f JOIN realisation r on f.id_film=r.id_film  WHERE r.id_realisateur=?")) {
+                        "SELECT * FROM films f JOIN realisations r on f.id_film=r.id_film  WHERE r.id_realisateur=?")) {
             ps.setInt(1, realisateur.getId());
 
             ResultSet rs = ps.executeQuery();
