@@ -55,7 +55,7 @@ public class Realisateur {
         // On vide la liste de réalisation présente au cas où
         this.realisation = new ArrayList<Realisation>();
         DaoRealisation daoRealisation = DaoRealisationFactory.getInstance();
-        this.realisation = daoRealisation.findAll(this);
+        this.realisation = daoRealisation.findAllFilm(this);
 
         return this.realisation;
     }

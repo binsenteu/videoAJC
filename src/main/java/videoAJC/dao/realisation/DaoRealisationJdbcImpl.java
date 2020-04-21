@@ -18,8 +18,6 @@ public class DaoRealisationJdbcImpl implements DaoRealisation {
 
         try (PreparedStatement ps = Context.getInstance().getConnection().prepareStatement(
                 "INSERT INTO realisations(id_realisateur, id_film) VALUES(?, ?)")) {
-            System.out.println("generated key : " + obj.getRealisateur().getId());
-            System.out.println("film key : " + obj.getFilm().getId());
             ps.setInt(1, obj.getRealisateur().getId());
             ps.setInt(2, obj.getFilm().getId());
             ps.executeUpdate();
@@ -77,8 +75,8 @@ public class DaoRealisationJdbcImpl implements DaoRealisation {
         Context.destroy();
     }
 
-    public List<Realisation> findAll(Realisateur realisateur) {
-        List<Realisation> listeRealisation = new ArrayList();
+    public List<Realisation> findAllFilm(Realisateur realisateur) {
+        List<Realisation> listeRealisation = new ArrayList<Realisation>();
         try (PreparedStatement ps = Context.getInstance().getConnection()
                 .prepareStatement(
                         "SELECT * FROM films f JOIN realisations r on f.id_film=r.id_film  WHERE r.id_realisateur=?")) {
@@ -88,6 +86,28 @@ public class DaoRealisationJdbcImpl implements DaoRealisation {
             while (rs.next()) {
                 Film f = new Film(rs.getInt("id_film"), rs.getString("titre"), rs.getDate("date_de_sortie"));
                 RealisationKey realKey = new RealisationKey(realisateur, f);
+                Realisation realisation = new Realisation(realKey);
+                listeRealisation.add(realisation);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        Context.destroy();
+        return listeRealisation;
+    }
+
+    public List<Realisation> findAllRealisateur(Film film) {
+        List<Realisation> listeRealisation = new ArrayList<Realisation>();
+        try (PreparedStatement ps = Context.getInstance().getConnection().prepareStatement(
+                "SELECT * FROM realisateurs f JOIN realisations r on f.id_realisateur=r.id_realisateur  WHERE r.id_film=?")) {
+            ps.setInt(1, film.getId());
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Realisateur realisateur = new Realisateur(rs.getInt("id_realisateur"), rs.getString("prenom"),
+                        rs.getString("prenom"));
+                RealisationKey realKey = new RealisationKey(realisateur, film);
                 Realisation realisation = new Realisation(realKey);
                 listeRealisation.add(realisation);
             }
