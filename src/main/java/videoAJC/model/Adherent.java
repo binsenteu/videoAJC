@@ -84,7 +84,7 @@ public class Adherent {
 			while (rs.next()) {
 				article = new Article(rs.getInt("id_article"), rs.getInt("nb_disques"));
 				articles.add(article);
-				//need gestion dvd bluray
+				//TODO - need gestion dvd bluray
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -95,7 +95,7 @@ public class Adherent {
 
 	
 	public void setArticles(List<Article> articles) {
-
+		//TODO
 	}
 	
 	
