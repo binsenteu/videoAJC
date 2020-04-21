@@ -1,5 +1,15 @@
 package videoAJC.model;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import videoAJC.context.Context;
+import videoAJC.dao.DaoAdherent;
+import videoAJC.dao.DaoAdherentFactory;
+
 public class Adherent {
 	private Integer id;
 	private String prenom;
@@ -7,6 +17,7 @@ public class Adherent {
 	private Civilite civilite;
 	private Adresse adresse;
 	
+	//constructors
 	public Adherent(Integer id, String prenom, String nom, Civilite civilite, Adresse adresse) {
 		this.id = id;
 		this.prenom = prenom;
@@ -14,7 +25,45 @@ public class Adherent {
 		this.civilite = civilite;
 		this.adresse = adresse;
 	}
-
+	
+	public Adherent(Integer id, String prenom, String nom, Adresse adresse) {
+		this.id = id;
+		this.prenom = prenom;
+		this.nom = nom;
+		this.civilite = null;
+		this.adresse = adresse;
+	}
+	
+	public Adherent(Integer id, String prenom, String nom) {
+		this.id = id;
+		this.prenom = prenom;
+		this.nom = nom;
+		this.civilite = null;
+		this.adresse = null;
+	}
+	
+	public Adherent(String prenom, String nom, Civilite civilite, Adresse adresse) {
+		this.prenom = prenom;
+		this.nom = nom;
+		this.civilite = civilite;
+		this.adresse = adresse;
+	}
+	
+	public Adherent(String prenom, String nom, Adresse adresse) {
+		this.prenom = prenom;
+		this.nom = nom;
+		this.civilite = null;
+		this.adresse = adresse;
+	}
+	
+	public Adherent(String prenom, String nom) {
+		this.prenom = prenom;
+		this.nom = nom;
+		this.civilite = null;
+		this.adresse = null;
+	}
+	
+	//getters setters
 	public Integer getId() {
 		return id;
 	}
@@ -48,13 +97,27 @@ public class Adherent {
 	}
 
 	public Adresse getAdresse() {
-		return adresse;
+		DaoAdherent daoAdherent = DaoAdherentFactory.getInstance();
+		return daoAdherent.findAdresse(this);
 	}
 
 	public void setAdresse(Adresse adresse) {
+		DaoAdherent daoAdherent = DaoAdherentFactory.getInstance();
+		daoAdherent.updateAdresse(this, adresse);
 		this.adresse = adresse;
 	}
-
+	
+	
+	public List<Article> getArticles() {
+		DaoAdherent daoAdherent = DaoAdherentFactory.getInstance();
+		return daoAdherent.findArticles(this);
+	}
+	
+	public void setArticles(List<Article> articles) {
+		DaoAdherent daoAdherent = DaoAdherentFactory.getInstance();
+		daoAdherent.updateArticles(this, articles);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
