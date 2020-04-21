@@ -19,7 +19,7 @@ public class Context {
 
 	private Context() {
 		try {
-			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/gestion_film", "postgres", "postgres");
+			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/gestionFilm", "postgres", "postgres");
 			connection.setAutoCommit(false);
 		} catch (SQLException e) {
 			e.printStackTrace();
