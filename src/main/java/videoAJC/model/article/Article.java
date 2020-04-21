@@ -3,7 +3,7 @@ package videoAJC.model.article;
 import videoAJC.model.Film;
 import videoAJC.model.adherent.Adherent;
 
-public class Article {
+public abstract class Article {
 	private Integer id;
 	private Integer nbDisques;
 	
@@ -18,8 +18,6 @@ public class Article {
 	}
 	
 	public Article() {
-		this.id = id;
-		this.nbDisques = nbDisques;
 	}
 	
 	public Integer getId() {
