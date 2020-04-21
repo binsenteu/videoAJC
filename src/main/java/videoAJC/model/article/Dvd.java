@@ -1,4 +1,4 @@
-package videoAJC.model;
+package videoAJC.model.article;
 
 public class Dvd extends Article{
 	private Boolean bonus;

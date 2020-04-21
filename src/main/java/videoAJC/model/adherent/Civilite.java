@@ -1,4 +1,4 @@
-package videoAJC.model;
+package videoAJC.model.adherent;
 
 public enum Civilite {
 	M("monsieur"), MME("madame"), MLLE("mademoiselle");

@@ -1,6 +1,7 @@
-package videoAJC.model;
+package videoAJC.model.article;
 
-
+import videoAJC.model.Film;
+import videoAJC.model.adherent.Adherent;
 
 public class Article {
 	private Integer id;

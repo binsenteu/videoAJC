@@ -1,4 +1,4 @@
-package videoAJC.model;
+package videoAJC.model.adherent;
 
 public class Adresse {
 	private Integer numero;

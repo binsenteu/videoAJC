@@ -1,4 +1,4 @@
-package videoAJC.model;
+package videoAJC.model.adherent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import videoAJC.context.Context;
-import videoAJC.dao.DaoAdherent;
-import videoAJC.dao.DaoAdherentFactory;
+import videoAJC.dao.adherent.DaoAdherent;
+import videoAJC.dao.adherent.DaoAdherentFactory;
+import videoAJC.model.article.Article;
 
 public class Adherent {
 	private Integer id;

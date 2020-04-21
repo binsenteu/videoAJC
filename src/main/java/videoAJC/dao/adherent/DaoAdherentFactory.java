@@ -1,4 +1,4 @@
-package videoAJC.dao;
+package videoAJC.dao.adherent;
 
 public class DaoAdherentFactory {
 	private static DaoAdherent daoAdherent = null;

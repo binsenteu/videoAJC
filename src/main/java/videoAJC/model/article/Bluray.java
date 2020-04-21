@@ -1,4 +1,4 @@
-package videoAJC.model;
+package videoAJC.model.article;
 
 public class Bluray extends Article{
 	private Boolean troisD;

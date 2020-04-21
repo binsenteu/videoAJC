@@ -1,4 +1,4 @@
-package videoAJC.dao;
+package videoAJC.dao.adherent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Optional;
 
 import videoAJC.context.Context;
-import videoAJC.model.Adherent;
-import videoAJC.model.Adresse;
-import videoAJC.model.Article;
-import videoAJC.model.Bluray;
-import videoAJC.model.Civilite;
-import videoAJC.model.Dvd;
+import videoAJC.model.adherent.Adherent;
+import videoAJC.model.adherent.Adresse;
+import videoAJC.model.adherent.Civilite;
+import videoAJC.model.article.Article;
+import videoAJC.model.article.Bluray;
+import videoAJC.model.article.Dvd;
 
 public class DaoAdherentJdbcImpl implements DaoAdherent {
 
