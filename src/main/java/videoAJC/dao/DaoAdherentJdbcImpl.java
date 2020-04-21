@@ -12,7 +12,9 @@ import videoAJC.context.Context;
 import videoAJC.model.Adherent;
 import videoAJC.model.Adresse;
 import videoAJC.model.Article;
+import videoAJC.model.Bluray;
 import videoAJC.model.Civilite;
+import videoAJC.model.Dvd;
 
 public class DaoAdherentJdbcImpl implements DaoAdherent {
 
@@ -141,6 +143,80 @@ public class DaoAdherentJdbcImpl implements DaoAdherent {
 		return adherents;
 	}
 
+	@Override
+	public List<Article> findArticles(Adherent obj) {
+		List<Article> articles = new ArrayList<Article>();
+		Article article = null;
+		
+		try (PreparedStatement ps = Context.getInstance().getConnection().prepareStatement("select * from articles where id_emprunteur = ?")) {
+			ps.setInt(1, obj.getId());
+			ResultSet rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				if (rs.getString("dvd_ou_bluray").equals("b")) {
+					article = new Bluray(rs.getInt("id_article"), rs.getInt("nb_disques"), rs.getBoolean("trois_d"));
+				} else if (rs.getString("dvd_ou_bluray").equals("d")) {
+					article = new Dvd(rs.getInt("id_article"), rs.getInt("nb_disques"), rs.getBoolean("bonus"));
+				}
+				articles.add(article);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		Context.destroy();
+		return articles;
+	}
 
+	@Override
+	public void updateArticles(Adherent obj, List<Article> articles) {
+		try (PreparedStatement ps = Context.getInstance().getConnection().prepareStatement("update articles set id_emprunteur = ? where id_article = ?")) {
+			for (Article article : articles) {
+				ps.setInt(1, obj.getId());
+				ps.setInt(2, article.getId());
+				ps.executeUpdate();
+			}
+			Context.getInstance().getConnection().commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Override
+	public Adresse findAdresse(Adherent obj) {
+		Adresse adresse = null;
+		
+		try (PreparedStatement ps = Context.getInstance().getConnection().prepareStatement("select numero_rue, adresse_rue, code_postal, ville from adherents where id = ?")) {
+			ps.setInt(1, obj.getId());
+			ResultSet rs = ps.executeQuery();
+			adresse = new Adresse(rs.getInt("numeroe_rue"), rs.getString("adresse_rue"), rs.getString("code_postal"), rs.getString("ville"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		Context.destroy();
+		return adresse;
+	}
+	
+	@Override
+	public void updateAdresse(Adherent obj, Adresse adresse) {
+		try (PreparedStatement ps = Context.getInstance().getConnection().prepareStatement("update adherents set numero_rue = ?, adresse_rue = ?, code_postal = ?, ville = ? where id = ?")) {
+			ps.setInt(1, adresse.getNumero());
+			ps.setString(2, adresse.getRue());
+			ps.setString(3, adresse.getCodePostal());
+			ps.setString(4, adresse.getVille());
+			ps.setInt(5, obj.getId());
+			
+			ps.executeUpdate();
+			Context.getInstance().getConnection().commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				Context.getInstance().getConnection().rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		Context.destroy();
+	}
 
 }

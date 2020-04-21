@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import videoAJC.context.Context;
+import videoAJC.dao.DaoAdherent;
+import videoAJC.dao.DaoAdherentFactory;
 
 public class Adherent {
 	private Integer id;
@@ -15,6 +17,7 @@ public class Adherent {
 	private Civilite civilite;
 	private Adresse adresse;
 	
+	//constructors
 	public Adherent(Integer id, String prenom, String nom, Civilite civilite, Adresse adresse) {
 		this.id = id;
 		this.prenom = prenom;
@@ -27,9 +30,40 @@ public class Adherent {
 		this.id = id;
 		this.prenom = prenom;
 		this.nom = nom;
+		this.civilite = null;
 		this.adresse = adresse;
 	}
-
+	
+	public Adherent(Integer id, String prenom, String nom) {
+		this.id = id;
+		this.prenom = prenom;
+		this.nom = nom;
+		this.civilite = null;
+		this.adresse = null;
+	}
+	
+	public Adherent(String prenom, String nom, Civilite civilite, Adresse adresse) {
+		this.prenom = prenom;
+		this.nom = nom;
+		this.civilite = civilite;
+		this.adresse = adresse;
+	}
+	
+	public Adherent(String prenom, String nom, Adresse adresse) {
+		this.prenom = prenom;
+		this.nom = nom;
+		this.civilite = null;
+		this.adresse = adresse;
+	}
+	
+	public Adherent(String prenom, String nom) {
+		this.prenom = prenom;
+		this.nom = nom;
+		this.civilite = null;
+		this.adresse = null;
+	}
+	
+	//getters setters
 	public Integer getId() {
 		return id;
 	}
@@ -63,43 +97,27 @@ public class Adherent {
 	}
 
 	public Adresse getAdresse() {
-		return adresse;
+		DaoAdherent daoAdherent = DaoAdherentFactory.getInstance();
+		return daoAdherent.findAdresse(this);
 	}
 
 	public void setAdresse(Adresse adresse) {
+		DaoAdherent daoAdherent = DaoAdherentFactory.getInstance();
+		daoAdherent.updateAdresse(this, adresse);
 		this.adresse = adresse;
 	}
 	
 	
-	
 	public List<Article> getArticles() {
-		
-		List<Article> articles = new ArrayList<Article>();
-		Article article = null;
-		
-		try (PreparedStatement ps = Context.getInstance().getConnection().prepareStatement("select * from articles where id = ?")) {
-			ps.setInt(1, this.id);
-			ResultSet rs = ps.executeQuery();
-			
-			while (rs.next()) {
-				article = new Article(rs.getInt("id_article"), rs.getInt("nb_disques"));
-				articles.add(article);
-				//TODO - need gestion dvd bluray
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		Context.destroy();
-		return articles;
+		DaoAdherent daoAdherent = DaoAdherentFactory.getInstance();
+		return daoAdherent.findArticles(this);
 	}
-
 	
 	public void setArticles(List<Article> articles) {
-		//TODO
+		DaoAdherent daoAdherent = DaoAdherentFactory.getInstance();
+		daoAdherent.updateArticles(this, articles);
 	}
 	
-	
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
