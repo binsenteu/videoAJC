@@ -1,0 +1,9 @@
+#Eclipse
+.classpath
+.project
+.settings/
+#Maven
+target/
+src/test/
+#MacOs
+.DS_Store
