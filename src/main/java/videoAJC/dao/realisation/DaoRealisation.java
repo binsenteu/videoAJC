@@ -1,16 +1,19 @@
 package videoAJC.dao.realisation;
 
+import java.util.List;
+
+import videoAJC.model.Realisateur;
+import videoAJC.model.Realisation;
 import videoAJC.model.RealisationKey;
 
 public interface DaoRealisation {
 
-    public default void insert(RealisationKey obj) {
-    }
+    void insert(RealisationKey obj);
 
-    public default void deleteFromRealisateur(Integer key) {
-    }
+    void deleteFromRealisateur(Integer key);
 
-    public default void deleteFromFilm(Integer key) {
-    }
+    void deleteFromFilm(Integer key);
+
+    List<Realisation> findAll(Realisateur realisateur);
 
 }

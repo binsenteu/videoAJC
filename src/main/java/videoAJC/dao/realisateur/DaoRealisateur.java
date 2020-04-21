@@ -6,5 +6,7 @@ import videoAJC.dao.DaoGeneric;
 import videoAJC.model.Realisateur;
 
 public interface DaoRealisateur extends DaoGeneric<Realisateur, Integer> {
-    List<Realisateur> findByName(String nom);
+    List<Realisateur> findByNom(String nom);
+
+    List<Realisateur> findByPrenom(String prenom);
 }

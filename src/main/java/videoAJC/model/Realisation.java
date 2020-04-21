@@ -6,6 +6,10 @@ public class Realisation {
     public Realisation() {
     }
 
+    public Realisation(RealisationKey id) {
+        this.id = id;
+    }
+
     public RealisationKey getId() {
         return id;
     }

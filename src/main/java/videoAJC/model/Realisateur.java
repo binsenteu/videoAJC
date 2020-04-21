@@ -1,12 +1,27 @@
 package videoAJC.model;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import videoAJC.dao.realisation.DaoRealisation;
+import videoAJC.dao.realisation.DaoRealisationFactory;
 
 public class Realisateur {
     private Integer id;
     private String prenom;
     private String nom;
-    private List<Film> realisation;
+    private List<Realisation> realisation;
+
+    public Realisateur(Integer id, String prenom, String nom) {
+        this.id = id;
+        this.prenom = prenom;
+        this.nom = nom;
+    }
+
+    public Realisateur(String prenom, String nom) {
+        this.prenom = prenom;
+        this.nom = nom;
+    }
 
     public Realisateur() {
     }
@@ -35,11 +50,17 @@ public class Realisateur {
         this.nom = nom;
     }
 
-    public List<Film> getRealisation() {
-        return realisation;
+    public List<Realisation> getRealisation() {
+
+        // On vide la liste de réalisation présente au cas où
+        this.realisation = new ArrayList<Realisation>();
+        DaoRealisation daoRealisation = DaoRealisationFactory.getInstance();
+        this.realisation = daoRealisation.findAll(this);
+
+        return this.realisation;
     }
 
-    public void setRealisation(List<Film> realisation) {
+    public void setRealisation(List<Realisation> realisation) {
         this.realisation = realisation;
     }
 
